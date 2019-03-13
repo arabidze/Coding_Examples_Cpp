@@ -81,8 +81,10 @@ int main() {
   BlockingQueue<Task> q; 
   std::vector<int> t;
   
+  int threshold = 5;
+  
   std::thread push_thr(pusher_func, std::ref(q), 10000);
-  std::thread pop_thr(poper_func, std::ref(q), std::ref(t), 5);
+  std::thread pop_thr(poper_func, std::ref(q), std::ref(t), threshold);
   
   pop_thr.join();
   usleep(1000); // start to pop thread before push, just another check
@@ -95,4 +97,6 @@ int main() {
   std::copy_if(t.begin(), t.end(), tmp.begin(), lambda);
   
   std::cout << " sum: " << std::accumulate(m.begin(), m.end(), 0) << std::endl;
+  
+  return 0;
 }

@@ -91,7 +91,6 @@ int main() {
   std::thread pop_thr(poper_func, std::ref(q), std::ref(t), threshold);
 
   pop_thr.join();
-  usleep(1000); // start to pop thread before push, just another check
   push_thr.join();
 
   /* sum multiples of threshold */

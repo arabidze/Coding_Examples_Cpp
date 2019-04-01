@@ -31,6 +31,7 @@ class BlockingQueue {
     std::mutex mutex;
     std::condition_variable condvar;
     std::queue<std::unique_ptr<T>> queue;
+    //std::queue<T> queue;
   public:
     BlockingQueue() = default;
     ~BlockingQueue() {}
@@ -44,11 +45,11 @@ class BlockingQueue {
         condvar.notify_one();
       }
 
-    std::unique_ptr<Task> pop(){
+    std::unique_ptr<T> pop(){
       std::unique_lock<std::mutex> lock(mutex);
       condvar.wait(lock, [&]{return !queue.empty();});
 
-      std::unique_ptr<Task> ptr = std::move(queue.front()) ;
+      std::unique_ptr<T> ptr = std::move(queue.front()) ;
       queue.pop() ;
       return ptr;
     }
@@ -94,8 +95,8 @@ int main() {
   push_thr.join();
 
   /* sum multiples of threshold */
-  auto lambda = [&threshold](int a, int b){return (b%threshold ==0)? a+b: a;} ;
-  std::cout << " sum: " << std::accumulate(t.begin(), t.end(), 0, lambda) << std::endl;
+  auto sum_multipliers = [&threshold](int a, int b){return (b%threshold ==0)? a+b: a;} ;
+  std::cout << " sum: " << std::accumulate(t.begin(), t.end(), 0, sum_multipliers) << std::endl;
 
   return 0;
 }
